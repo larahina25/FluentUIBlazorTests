@@ -1,0 +1,50 @@
+﻿@page "/focus-async-test"
+
+<PageTitle>Focus Async Test</PageTitle>
+Blub
+
+<FluentAutocomplete TOption="Customer" Id="autocomplete" @ref="_autocomplete" @bind-SelectedOption="_autocompleteValue" OnOptionsSearch="@OnSearch" Multiple="false" Label="Autocomplete" Width="300px" />
+
+<FluentCombobox TOption="Customer" Id="combobox" @ref="_combobox" @bind-Value="_comboboxValue" Items="@Customer.Customers" Label="Combobox" Width="300px" />
+<FluentListbox TOption="Customer" Id="listbox" @ref="_listbox" @bind-SelectedOption="_listboxValue" Items="@Customer.Customers" Label="Listbox" Width="300px" />
+<FluentSelect TOption="Customer" Id="select" @ref="_select" @bind-SelectedOption="_selectValue" Items="@Customer.Customers" Label="Select" Width="300px" />
+
+<FluentButton OnClick="@(() => _autocomplete.FocusAsync())" Style="margin-top:10px">Focus Autocomplete</FluentButton>
+<FluentButton OnClick="@(() => _combobox.FocusAsync())" Style="margin-top:10px">Focus Combobox</FluentButton>
+<FluentButton OnClick="@(() => _listbox.FocusAsync())" Style="margin-top:10px">Focus Listbox</FluentButton>
+<FluentButton OnClick="@(() => _select.FocusAsync())" Style="margin-top:10px">Focus Select</FluentButton>
+
+@code {
+	FluentAutocomplete<Customer> _autocomplete = null!;
+	FluentCombobox<Customer> _combobox = null!;
+	FluentListbox<Customer> _listbox = null!;
+	FluentSelect<Customer> _select = null!;
+
+	private Customer _autocompleteValue = Customer.Customers[0];
+	private string? _comboboxValue;
+	private Customer _listboxValue = Customer.Customers[0];
+	private Customer _selectValue = Customer.Customers[0];
+
+	private void OnSearch(OptionsSearchEventArgs<Customer> e)
+	{
+		e.Items = Customer.Customers
+			.Where(c => c.Name.Contains(e.Text, StringComparison.InvariantCultureIgnoreCase))
+			.ToList();
+	}
+
+	private struct Customer
+	{
+		public static readonly Customer[] Customers =
+		[
+		new() { Id = 1, Name = "Alice" },
+		new() { Id = 2, Name = "Bob" },
+		new() { Id = 3, Name = "Charlie" },
+		new() { Id = 4, Name = "Diana" },
+		new() { Id = 5, Name = "Eve" },
+	];
+		public int Id { get; set; }
+		public required string Name { get; set; }
+
+		override public string ToString() => Name;
+	}
+}
