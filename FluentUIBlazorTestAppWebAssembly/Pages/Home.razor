@@ -2,34 +2,45 @@
 
 <PageTitle>Home</PageTitle>
 
-<FluentAutocomplete TOption="Customer" @ref="_autocomplete" @bind-SelectedOption="_value" OnOptionsSearch="@OnSearchAsync" Multiple="false" Label="Autocomplete" Width="300px"/>
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="10">
 
-<FluentButton OnClick="@(() => _autocomplete.FocusAsync(true))" Style="margin-top:10px">Focus Autocomplete</FluentButton>
+	<FluentLabel Typo="Typography.H5">Menu with Checkboxes</FluentLabel>
+	<FluentStack Orientation="Orientation.Horizontal" Style="margin-bottom: 100px;">
+		<FluentButton Id="menu-btn" OnClick="@(_ => open = !open)">ToggleMenu</FluentButton>
+
+		<FluentMenu @bind-Open="open" Anchor="menu-btn" OnCheckedChanged="HandleCheckedChanged" UseMenuService="useMenuService">
+
+			<FluentMenuItem Id="ck1" Role="MenuItemRole.MenuItemCheckbox" @bind-Checked="checkbox1" KeepOpen="true">
+				Checkbox MenuItem 1 is @(checkbox1 ? "Checked" : "Unchecked")
+			</FluentMenuItem>
+
+			<FluentMenuItem Id="ck2" Role="MenuItemRole.MenuItemCheckbox" @bind-Checked="checkbox2" KeepOpen="true">
+				Checkbox MenuItem 2 is @(checkbox2 ? "Checked" : "Unchecked")
+			</FluentMenuItem>
+
+		</FluentMenu>
+		<FluentCheckbox @bind-Value="useMenuService" Label="UseMenuService" />
+	</FluentStack>
+
+	<FluentLabel Typo="Typography.H5">Log Entries</FluentLabel>
+	<ul>
+		@foreach (var log in logEntries)
+		{
+			<li>@log</li>
+		}
+	</ul>
+</FluentStack>
 
 @code {
-	FluentAutocomplete<Customer> _autocomplete = null!;
-	private Customer _value = Customer.Customers[0];
+	bool checkbox1 = false;
+	bool checkbox2 = true;
+	bool open = false;
+	bool useMenuService = true;
 
-	private void OnSearchAsync(OptionsSearchEventArgs<Customer> e)
+	List<string> logEntries = new();
+
+	void HandleCheckedChanged(FluentMenuItem args)
 	{
-		e.Items = Customer.Customers
-			.Where(c => c.Name.Contains(e.Text, StringComparison.InvariantCultureIgnoreCase))
-			.ToList();
-	}
-
-	private struct Customer
-	{
-		public static readonly Customer[] Customers =
-		[
-		new() { Id = 1, Name = "Alice" },
-		new() { Id = 2, Name = "Bob" },
-		new() { Id = 3, Name = "Charlie" },
-		new() { Id = 4, Name = "Diana" },
-		new() { Id = 5, Name = "Eve" },
-	];
-		public int Id { get; set; }
-		public required string Name { get; set; }
-
-		override public string ToString() => Name;
+		logEntries.Add($"MenuItem with Id '{args.Id}' checked changed to '{args.Checked}'");
 	}
 }
