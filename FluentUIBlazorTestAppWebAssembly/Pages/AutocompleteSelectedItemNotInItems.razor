@@ -23,7 +23,7 @@
 						SelectedOption="@_selectedOption"
 						SelectedOptionChanged="@SelectedOptionChanged"
 						Multiple="false"
-						OnOptionsSearch="@OnSearchAsync" +
+						OnOptionsSearch="@OnSearchAsync"
 						Width="250px">
 	</FluentAutocomplete>
 
@@ -48,7 +48,6 @@
 		Console.WriteLine($"Selected option changed to: {country?.Name} ({country?.Code})");
 		_selectedOption = country;
 	}
-
 
 	private void OnSearchAsync(OptionsSearchEventArgs<Country> e)
 	{
@@ -91,5 +90,8 @@
 			return _countries;
 		}
 	}
-	private record Country(string Name, string Code);
+	private record Country(string Name, string Code)
+	{
+		public override string ToString() => $"{Name} ({Code})";
+	}
 }
