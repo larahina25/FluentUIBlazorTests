@@ -1,16 +1,18 @@
 ﻿<div class="navmenu">
-    <input type="checkbox" title="Menu expand/collapse toggle" id="navmenu-toggle" class="navmenu-icon" />
-    <label for="navmenu-toggle" class="navmenu-icon"><FluentIcon Value="@(new Icons.Regular.Size20.Navigation())" Color="Color.Fill" /></label>
-    <nav class="sitenav" aria-labelledby="main-menu">
-        <FluentNavMenu Id="main-menu" Width="250" Collapsible="true" Title="Navigation menu" @bind-Expanded="expanded" CustomToggle="true">
-             <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())" IconColor="Color.Accent">Home</FluentNavLink>
-             <FluentNavLink Href="/focus-async-test" Icon="@(new Icons.Regular.Size20.NumberSymbolSquare())" IconColor="Color.Accent">Focus Async Test</FluentNavLink>
-            <FluentNavLink Href="/menu/oncheckedchanged-test" Icon="@(new Icons.Regular.Size20.Checkbox1())" IconColor="Color.Accent">Menu OnCheckedChanged Test</FluentNavLink>
-            <FluentNavLink Href="/autocomplete/selecteditem-not-in-items" Icon="@(new Icons.Regular.Size20.Airplane())" IconColor="Color.Accent">Autocomplete SelectedItem not in Items</FluentNavLink>
-        </FluentNavMenu>
-    </nav>
+	<input type="checkbox" title="Menu expand/collapse toggle" id="navmenu-toggle" class="navmenu-icon" />
+	<label for="navmenu-toggle" class="navmenu-icon"><FluentIcon Value="@(new Icons.Regular.Size20.Navigation())" Color="Color.Fill" /></label>
+	<nav class="sitenav" aria-labelledby="main-menu">
+		<FluentNavMenu Id="main-menu" Width="250" Collapsible="true" Title="Navigation menu" @bind-Expanded="expanded" CustomToggle="true">
+			<FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())" IconColor="Color.Accent">Home</FluentNavLink>
+			<FluentNavLink Href="/focus-async-test" Icon="@(new Icons.Regular.Size20.NumberSymbolSquare())" IconColor="Color.Accent">Focus Async Test</FluentNavLink>
+			<FluentNavLink Href="/menu/oncheckedchanged-test" Icon="@(new Icons.Regular.Size20.Checkbox1())" IconColor="Color.Accent">Menu OnCheckedChanged Test</FluentNavLink>
+			<FluentNavLink Href="/autocomplete/selecteditem-not-in-items" Icon="@(new Icons.Regular.Size20.Airplane())" IconColor="Color.Accent">Autocomplete SelectedItem not in Items</FluentNavLink>
+			<FluentNavLink Href="/autocomplete/grid-form-example" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Table())" IconColor="Color.Accent">Grid Form Example</FluentNavLink>
+			<FluentNavLink Href="/autocomplete/dependent-inputs-example" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.AirplaneTakeOff())" IconColor="Color.Accent">Dependent Inputs Example</FluentNavLink>
+		</FluentNavMenu>
+	</nav>
 </div>
 
 @code {
-    private bool expanded = true;
+	private bool expanded = true;
 }

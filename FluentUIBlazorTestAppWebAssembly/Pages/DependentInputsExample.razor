@@ -1,0 +1,57 @@
+﻿@page "/autocomplete/dependent-inputs-example"
+<h3>Dependent Inputs Example</h3>
+
+<FluentSelect TOption="Meal" SelectedOption="_selectedMeal" SelectedOptionChanged="@HandleSelectedOptionChanged" Items="@(Enum.GetValues<Meal>().Cast<Meal>())" Label="Select Meal" Width="200px"/>
+<FluentAutocomplete TOption="string" @bind-SelectedOption="_selectedDish" OnOptionsSearch="@OnSearchAsync"
+					Label="Select Dish"
+					Width="200px"
+					Multiple="false" />
+@code {
+	private Meal _selectedMeal;
+	private string _selectedDish = "Pancakes";
+	public enum Meal { Breakfast, Lunch, Dinner };
+	private IEnumerable<Option<Meal>> MealOptions = new[]
+	{
+		new Option<Meal>{ Value = Meal.Breakfast, Text = "Breakfast" },
+		new Option<Meal>{ Value = Meal.Lunch, Text = "Lunch" },
+		new Option<Meal>{ Value = Meal.Dinner, Text = "Dinner" }
+	};
+
+	private readonly string[] _breakfastDishes = new[] { "Pancakes", "Omelette", "Fruit Salad" };
+	private readonly string[] _lunchDishes = new[] { "Caesar Salad", "Grilled Cheese Sandwich", "Tomato Soup" };
+	private readonly string[] _dinnerDishes = new[] { "Steak", "Spaghetti Bolognese", "Grilled Salmon" };
+
+	private IEnumerable<string> GetDishesForSelectedMeal()
+	{
+		return _selectedMeal switch
+		{
+			Meal.Breakfast => _breakfastDishes,
+			Meal.Lunch => _lunchDishes,
+			Meal.Dinner => _dinnerDishes,
+			_ => Array.Empty<string>(),
+		};
+	}
+
+	private void HandleSelectedOptionChanged(Meal meal)
+	{
+		_selectedMeal = meal;
+		_selectedDish = GetDishesForSelectedMeal().First(); // Set default dish for the selected meal
+	}
+
+	private void OnSearchAsync(OptionsSearchEventArgs<string> e)
+	{
+		Console.WriteLine("OnSearchAsync called with text: " + e.Text);
+		if (String.IsNullOrEmpty(e.Text))
+		{
+			e.Items = GetDishesForSelectedMeal();
+		}
+		else
+		{
+			e.Items = GetDishesForSelectedMeal()
+				.Where(c => c.ToString().Contains(e.Text, StringComparison.InvariantCultureIgnoreCase))
+				.ToList();
+		}
+	}
+
+
+}

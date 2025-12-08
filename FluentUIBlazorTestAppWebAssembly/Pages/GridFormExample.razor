@@ -1,0 +1,59 @@
+﻿@page "/autocomplete/grid-form-example"
+<h3>Grid Form Example</h3>
+
+<FluentSplitter>
+	<Panel1>
+		<FluentDataGrid Items="Person.People.AsQueryable()" TGridItem="Person">
+			<SelectColumn SelectedItems="_selectedPersons" TGridItem="Person"
+						  SelectMode="DataGridSelectMode.SingleSticky" OnSelect="@OnSelect" />
+			<PropertyColumn Property="@(p => p.Name)" Title="Name" />
+			<PropertyColumn Property="@(p => p.Country)" Title="Country" />
+		</FluentDataGrid>
+	</Panel1>
+	<Panel2>
+		<FluentCard>
+			<h3></h3>
+
+			<EditForm Model="@_selectedPerson">
+				<FluentStack Orientation="@Orientation.Vertical">
+					<FluentTextField @bind-Value="_selectedPerson.Name" Label="Name" />
+					<CustomAutocomplete TOption="Country"
+										@bind-SelectedOption="_selectedPerson.Country"
+										OnOptionsSearch="@OnSearchAsync"
+										Label="Country"
+										Width="250px"
+										Multiple="false"
+										MaximumOptionsSearch="5" />
+				</FluentStack>
+			</EditForm>
+
+		</FluentCard>
+	</Panel2>
+</FluentSplitter>
+
+@code {
+	IEnumerable<Person> _selectedPersons => _selectedPerson is null ? [] : [_selectedPerson];
+
+	Person _selectedPerson = Person.People[0];
+
+	public void OnSelect((Person Item, bool Selected) e)
+	{
+		if (e.Selected)
+			_selectedPerson = e.Item;
+	}
+
+	private void OnSearchAsync(OptionsSearchEventArgs<Country> e)
+	{
+		Console.WriteLine("OnSearchAsync called with text: " + e.Text);
+		if (String.IsNullOrEmpty(e.Text))
+		{
+			e.Items = Country.Countries;
+		}
+		else
+		{
+			e.Items = Country.Countries
+				.Where(c => c.Name.Contains(e.Text, StringComparison.InvariantCultureIgnoreCase))
+				.ToList();
+		}
+	}
+}
