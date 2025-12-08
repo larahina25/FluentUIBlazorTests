@@ -56,44 +56,13 @@
 		Console.WriteLine("OnSearchAsync called with text: " + e.Text);
 		if (String.IsNullOrEmpty(e.Text))
 		{
-			e.Items = Countries;
+			e.Items = Country.Countries;
 		}
 		else
 		{
-			e.Items = Countries
+			e.Items = Country.Countries
 				.Where(c => c.Name.Contains(e.Text, StringComparison.InvariantCultureIgnoreCase))
 				.ToList();
 		}
-	}
-	private List<Country>? _countries;
-	private List<Country> Countries
-	{
-		get
-		{
-			if (_countries == null)
-			{
-				_countries = new List<Country>()
-				{
-					new("Australia", "AU"),
-					new("United States","US"),
-					new("Canada","CA" ),
-					new("Mexico","MX" ),
-					new("Brazil","BR" ),
-					new("Argentina","AR" ),
-					new("United Kingdom","GB" ),
-					new("France",  "FR" ),
-					new("Germany", "DE" ),
-					new("Italy", "IT" ),
-					new("Spain", "ES" ),
-					new("Portugal", "PT" ),
-					new("Netherlands",  "NL")
-				};
-			}
-			return _countries;
-		}
-	}
-	private record Country(string Name, string Code)
-	{
-		public override string ToString() => $"{Name} ({Code})";
 	}
 }
