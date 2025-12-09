@@ -1,6 +1,14 @@
 ﻿@page "/autocomplete/grid-form-example"
 <h3>Grid Form Example</h3>
 
+<p>This page shows an example where the SelectedOption of the Autocomplete component is set from the outside.
+	When a different person is selected in the grid, the bound model of the form is updated and therefore the SelectedOption of the Autocomplete (Country) as well.
+
+	In this case everything works as I would expect, because when the Model of the Form changes the input components inside the form are newly initialized.
+	So at this point the internal Items list of the Autocomplete list is still empty and the SelectedOption can be set to anything.
+	(Check the console output to see that the component is newly initialized every time the selection in the grid changes.)
+</p>
+
 <FluentSplitter>
 	<Panel1>
 		<FluentDataGrid Items="Person.People.AsQueryable()" TGridItem="Person">
