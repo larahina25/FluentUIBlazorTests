@@ -1,41 +1,49 @@
 ﻿@page "/autocomplete/dependent-inputs-example"
 <h3>Dependent Inputs Example</h3>
 
-<FluentSelect TOption="Meal" SelectedOption="_selectedMeal" SelectedOptionChanged="@HandleSelectedOptionChanged" Items="@(Enum.GetValues<Meal>().Cast<Meal>())" Label="Select Meal" Width="200px"/>
-<FluentAutocomplete TOption="string" @bind-SelectedOption="_selectedDish" OnOptionsSearch="@OnSearchAsync"
-					Label="Select Dish"
+<p>This page shows an example where the SelectedOption of the Autocomplete component is set from the outside.
+	When a different meal option is selected in the Select component, a default meal should be selected in the Autocomplete component.
+
+	This works as expected as long as the user does not interact with the Autocomplete component. 
+	Once the user opens the Autocomplete dropdown once, the internal Items list of the Autocomplete component is populated and can't be set to a meal from a different meal option afterwards.
+
+</p>
+
+<FluentSelect TOption="MealOption" SelectedOption="_selectedMealOption" SelectedOptionChanged="@HandleSelectedOptionChanged" Items="@(Enum.GetValues<MealOption>().Cast<MealOption>())" Label="Select Meal Option" Width="200px" />
+<FluentAutocomplete TOption="string" @bind-SelectedOption="_selectedMeal" OnOptionsSearch="@OnSearchAsync"
+					Label="Select Meal"
 					Width="200px"
 					Multiple="false" />
 @code {
-	private Meal _selectedMeal;
-	private string _selectedDish = "Pancakes";
-	public enum Meal { Breakfast, Lunch, Dinner };
-	private IEnumerable<Option<Meal>> MealOptions = new[]
+	private MealOption _selectedMealOption;
+	private string _selectedMeal = "Steak";
+	public enum MealOption { NonVegetarian, Vegetarian, Vegan };
+	private IEnumerable<Option<MealOption>> MealOptions = new[]
 	{
-		new Option<Meal>{ Value = Meal.Breakfast, Text = "Breakfast" },
-		new Option<Meal>{ Value = Meal.Lunch, Text = "Lunch" },
-		new Option<Meal>{ Value = Meal.Dinner, Text = "Dinner" }
+		new Option<MealOption>{ Value = MealOption.NonVegetarian, Text = "Breakfast" },
+		new Option<MealOption>{ Value = MealOption.Vegetarian, Text = "Lunch" },
+		new Option<MealOption>{ Value = MealOption.Vegan, Text = "Dinner" }
 	};
 
-	private readonly string[] _breakfastDishes = new[] { "Pancakes", "Omelette", "Fruit Salad" };
-	private readonly string[] _lunchDishes = new[] { "Caesar Salad", "Grilled Cheese Sandwich", "Tomato Soup" };
-	private readonly string[] _dinnerDishes = new[] { "Steak", "Spaghetti Bolognese", "Grilled Salmon" };
+	private readonly string[] _nonVegetarianMeals = new[] { "Steak", "Spaghetti Bolognese", "Grilled Salmon" };
+	private readonly string[] _vegetarianMeals = new[] { "Vegetable Stir Fry", "Margherita Pizza", "Pasta Primavera" };
+	private readonly string[] _veganMeals = new[] { "Vegan Buddha Bowl", "Lentil Soup", "Quinoa Salad" };
 
-	private IEnumerable<string> GetDishesForSelectedMeal()
+	private IEnumerable<string> GetMealsForMealOption()
 	{
-		return _selectedMeal switch
+		return _selectedMealOption switch
 		{
-			Meal.Breakfast => _breakfastDishes,
-			Meal.Lunch => _lunchDishes,
-			Meal.Dinner => _dinnerDishes,
+			MealOption.NonVegetarian => _nonVegetarianMeals,
+			MealOption.Vegetarian => _vegetarianMeals,
+			MealOption.Vegan => _veganMeals,
 			_ => Array.Empty<string>(),
 		};
 	}
 
-	private void HandleSelectedOptionChanged(Meal meal)
+	private void HandleSelectedOptionChanged(MealOption meal)
 	{
-		_selectedMeal = meal;
-		_selectedDish = GetDishesForSelectedMeal().First(); // Set default dish for the selected meal
+		_selectedMealOption = meal;
+		_selectedMeal = GetMealsForMealOption().First(); // Set default dish for the selected meal
 	}
 
 	private void OnSearchAsync(OptionsSearchEventArgs<string> e)
@@ -43,11 +51,11 @@
 		Console.WriteLine("OnSearchAsync called with text: " + e.Text);
 		if (String.IsNullOrEmpty(e.Text))
 		{
-			e.Items = GetDishesForSelectedMeal();
+			e.Items = GetMealsForMealOption();
 		}
 		else
 		{
-			e.Items = GetDishesForSelectedMeal()
+			e.Items = GetMealsForMealOption()
 				.Where(c => c.ToString().Contains(e.Text, StringComparison.InvariantCultureIgnoreCase))
 				.ToList();
 		}
